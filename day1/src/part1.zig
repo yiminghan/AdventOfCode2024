@@ -16,7 +16,7 @@ pub fn main() !void {
     var buf: [1024]u8 = undefined;
     while (try in_stream.readUntilDelimiterOrEof(&buf, '\n')) |line| {
         // do something with line...
-        try stdout.writer().print("{s}\n", .{line});
+        // try stdout.writer().print("{s}\n", .{line});
 
         const trimline = std.mem.trimRight(u8, line, "\n");
         var split = std.mem.splitScalar(u8, trimline, ' ');
