@@ -31,7 +31,8 @@ fn tryPart(in: []const u8, depth: usize) bool {
     var partsIterator = parts.iterator();
     while (partsIterator.next()) |x| {
         if (std.mem.startsWith(u8, in, x.key_ptr.*)) {
-            if (tryPart(in[x.key_ptr.*.len..], depth + 1)) {
+            const slice = std.fmt.allocPrint(std.heap.page_allocator, "{s}", .{in[x.key_ptr.*.len..]}) catch "";
+            if (tryPart(slice, depth + 1)) {
                 cache.put(in, true) catch {};
                 return true;
             }
@@ -43,7 +44,7 @@ fn tryPart(in: []const u8, depth: usize) bool {
 }
 
 fn readcombos() !void {
-    try cache.ensureTotalCapacity(1_000_000);
+    // try cache.ensureTotalCapacity(1_000_000);
     var file = try std.fs.cwd().openFile("./src/combos.txt", .{});
     defer file.close();
 
@@ -53,7 +54,8 @@ fn readcombos() !void {
 
     var counter: usize = 0;
     while (try in_stream.readUntilDelimiterOrEof(&buf, '\n')) |line| {
-        if (tryPart(line, 0)) counter += 1;
+        const slice = std.fmt.allocPrint(std.heap.page_allocator, "{s}", .{line}) catch "";
+        if (tryPart(slice, 0)) counter += 1;
     }
 
     try stdout.writer().print("counter {}", .{counter});
