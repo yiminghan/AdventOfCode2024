@@ -147,9 +147,20 @@ pub fn main() !void {
     reverseWalk();
 
     // part 1
+
     var cheatScore: usize = 0;
 
     var i = optimalPath.iterator();
+    while (i.next()) |node| {
+        cheatScore += calculateCheat(node.key_ptr.*, 2, 100);
+    }
+
+    try stdout.writer().print("cheatSize {} \n", .{cheatScore / 2});
+
+    // part 2
+    cheatScore = 0;
+
+    i = optimalPath.iterator();
     while (i.next()) |node| {
         cheatScore += calculateCheat(node.key_ptr.*, 20, 100);
     }
